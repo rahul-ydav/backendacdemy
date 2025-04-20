@@ -9,7 +9,6 @@ app.post('/login', (req, res)=>{
     console.log(req.body);
     let message = 'Invalid credentials';
     if(req.body.email==='abc@gmail.com' && req.body.password==='abc'){
-        // res.send('http://localhost:5173/FrontPage');
         message = 'FrontPage';
     }
     res.send({message});
