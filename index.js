@@ -10,7 +10,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-
 app.post('/login', (req, res)=>{
     const {email, password} = req.body;
 
@@ -18,7 +17,7 @@ app.post('/login', (req, res)=>{
         res.sendStatus(401);
         return;
     }
-    let accessToken = jwt.sign({email, password}, process.env.ACCESS_TOKEN_SECRET);
+    const accessToken = jwt.sign({email, password}, process.env.ACCESS_TOKEN_SECRET);
     res.cookie('jwt', accessToken, {
         httpOnly: true,
         secure: true,
