@@ -27,10 +27,6 @@ app.post('/login', (req, res)=>{
     res.sendStatus(200);
 })
 
-app.post('/verifyAuth', authenticateToken, (req, res)=>{
-    res.sendStatus(200);
-})
-
 app.post('/logout', (req, res)=>{
     res.clearCookie('jwt', {
         httpOnly: true,
@@ -39,7 +35,6 @@ app.post('/logout', (req, res)=>{
     });
     res.sendStatus(200);
 });
-
 
 function authenticateToken(req, res, next){
     const token = req.cookies.jwt;
@@ -51,6 +46,13 @@ function authenticateToken(req, res, next){
         next();
     })
 }
+
+app.use(authenticateToken);
+
+app.post('/verifyAuth', (req, res)=>{
+    res.sendStatus(200);
+})
+
 
 app.listen(8000, ()=>{
     console.log(`Listening on port 8000`);
