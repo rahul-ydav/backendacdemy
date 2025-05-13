@@ -9,8 +9,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-
-app.post('/login', (req, res)=>{
+app.post('/app/login', (req, res)=>{
     const {email, password} = req.body;
 
     if(!req.body.email==='abc@gmail.com' || !req.body.password==='abc'){
@@ -27,7 +26,7 @@ app.post('/login', (req, res)=>{
     res.sendStatus(200);
 })
 
-app.post('/logout', (req, res)=>{
+app.post('/app/logout', (req, res)=>{
     res.clearCookie('jwt', {
         httpOnly: true,
         sameSite: 'strict',
@@ -49,7 +48,7 @@ function authenticateToken(req, res, next){
 
 app.use(authenticateToken);
 
-app.post('/verifyAuth', (req, res)=>{
+app.post('/app/verifyAuth', (req, res)=>{
     res.sendStatus(200);
 })
 
