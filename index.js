@@ -37,6 +37,7 @@ app.post('/app/logout', (req, res)=>{
 
 function authenticateToken(req, res, next){
     const token = req.cookies.jwt;
+    console.log('tokenValue:: ',token);
     if(!token) return res.sendStatus(401);
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded)=>{
         if(err) return res.sendStatus(403);
@@ -44,14 +45,15 @@ function authenticateToken(req, res, next){
         decoded.password = 'abc';
         next();
     })
+    console.log('req.user:: ', req.user);
 }
 
 app.use(authenticateToken);
 
 app.post('/app/verifyAuth', (req, res)=>{
+    console.log('hitting verifyAuth');
     res.sendStatus(200);
 })
-
 
 app.listen(8000, ()=>{
     console.log(`Listening on port 8000`);
