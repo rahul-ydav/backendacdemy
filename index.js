@@ -1,8 +1,14 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const AuthService = require('./AuthWork/services/AuthService.js');
+const { authenticateToken } = new AuthService();
+
+const authRoutes = require('./AuthWork/controllers/AuthRoutes.js');
+const Lessons = require('./Lessons/controllers/lessons.get.js');
+const Progress = require('./Progress/controllers/progress.get.js');
+const LessonsPut = require('./Lessons/controllers/lessons.put.js');
 
 app.use(cors());
 app.use(cookieParser());
@@ -22,63 +28,24 @@ let configObject = require('./config/Config.js');
 
 require('./DBConnection.js')(configObject.dbDetails);
 
-app.post('/app/login', async (req, res) => {
-	const { email, password } = req.body;
+app.use('/app', authRoutes);
 
-	const client = await pool.connect();
-	try {
-		const result = await client.query('SELECT * FROM public.users WHERE email = $1 AND password = $2', [email, password]);
-		if (result.rows.length > 0) {
-			const user = result.rows[0];
-			console.log('User found:', user);
-		} else {
-			console.log('User not found');
-		}
-	} catch (err) {
-		console.error('Error executing query', err.stack);
-
-	} finally {
-		client.release();
-	}
-
-	const accessToken = jwt.sign({ email, password }, process.env.ACCESS_TOKEN_SECRET);
-	res.cookie('jwt', accessToken, {
-		httpOnly: true,
-		secure: true,
-		sameSite: 'strict',
-		maxAge: configObject.maxAge// 1 day
-	});
-	res.sendStatus(200);
-})
-
-app.post('/app/logout', (req, res) => {
-	res.clearCookie('jwt', {
-		httpOnly: true,
-		sameSite: 'strict',
-		secure: true
-	});
-	res.sendStatus(200);
-});
-
-function authenticateToken(req, res, next) {
-	const token = req.cookies.jwt;
-	console.log('tokenValue:: ', token);
-	if (!token) return res.sendStatus(401);
-	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-		if (err) return res.sendStatus(403);
-		req.user = decoded;
-		decoded.password = 'abc';
-		next();
-	})
-	console.log('req.user:: ', req.user);
-}
-
-app.use(authenticateToken);
+// app.use(authenticateToken);
 
 app.post('/app/verifyAuth', (req, res) => {
 	console.log('hitting verifyAuth');
 	res.sendStatus(200);
 })
+
+app.use('/app', Lessons);
+app.use('/app', LessonsPut);
+app.use('/app', Progress);
+
+
+app.get('/', (req, res) => {
+	res.send('Default GET route');
+});
+
 
 app.post('/', (req, res) => {
 	res.sendStatus(404).send('Default POST route');
