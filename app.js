@@ -30,7 +30,7 @@ require('./DBConnection.js')(configObject.dbDetails);
 
 app.use('/app', authRoutes);
 
-// app.use(authenticateToken);
+app.use(authenticateToken);
 
 app.post('/app/verifyAuth', (req, res) => {
 	console.log('hitting verifyAuth');
