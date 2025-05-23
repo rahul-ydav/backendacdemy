@@ -33,7 +33,6 @@ app.use('/app', authRoutes);
 app.use(authenticateToken);
 
 app.post('/app/verifyAuth', (req, res) => {
-	console.log('hitting verifyAuth');
 	res.sendStatus(200);
 })
 
