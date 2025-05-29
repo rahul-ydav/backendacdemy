@@ -7,7 +7,7 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "core api",
+			"name": "main app",
 			"runtimeExecutable": "nodemon",
 			"skipFiles": [
 				"<node_internals>/**"
